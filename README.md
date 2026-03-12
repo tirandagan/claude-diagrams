@@ -25,15 +25,58 @@ Describe what you want to visualize and the plugin will:
 
 ## Installation
 
-### Local testing
+### Option A: Quick install (recommended)
+
+This method downloads the plugin and makes it available every time you use Claude Code.
+
+**Step 1: Open your terminal**
+
+- **Mac**: Open the **Terminal** app (search for "Terminal" in Spotlight)
+- **Windows**: Open **Git Bash**, **WSL**, or **PowerShell**
+- **Linux**: Open your terminal application
+
+**Step 2: Download the plugin**
+
+Copy and paste this command into your terminal and press Enter:
 
 ```bash
-claude --plugin-dir ~/dev/claude_diagrams
+git clone https://github.com/tirandagan/claude-diagrams.git ~/.claude-plugins/claude-diagrams
 ```
 
-### Install to user scope
+This downloads the plugin to a folder on your computer. If you see an error about `git` not being found, you need to [install Git](https://git-scm.com/downloads) first.
 
-Add to a marketplace or install directly via `--plugin-dir`.
+**Step 3: Start Claude Code with the plugin**
+
+```bash
+claude --plugin-dir ~/.claude-plugins/claude-diagrams
+```
+
+That's it! The `/diagrams:diagram` command is now available in your Claude Code session.
+
+> **Tip:** You'll need to include `--plugin-dir ~/.claude-plugins/claude-diagrams` each time you start Claude Code. To avoid this, see Option B below.
+
+### Option B: Install via marketplace (permanent)
+
+If this plugin is available in a Claude Code marketplace, you can install it permanently so it loads automatically every session:
+
+```bash
+claude plugins install diagrams
+```
+
+If the plugin isn't found, you can add this repository as a marketplace source first:
+
+```bash
+claude plugins marketplace add https://github.com/tirandagan/claude-diagrams
+claude plugins install diagrams
+```
+
+### Updating the plugin
+
+To get the latest version:
+
+```bash
+cd ~/.claude-plugins/claude-diagrams && git pull
+```
 
 ## Usage
 

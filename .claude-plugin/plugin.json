@@ -1,0 +1,10 @@
+{
+  "name": "diagrams",
+  "description": "Generate professional diagrams from natural language descriptions using Kroki.io. Supports 20+ diagram types including PlantUML, Mermaid, GraphViz, D2, C4, ERD, and more. Automatically selects the optimal diagram type, generates styled scripts, and renders PNG and SVG images.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Tiran Dagan"
+  },
+  "license": "MIT",
+  "keywords": ["diagrams", "kroki", "plantuml", "mermaid", "graphviz", "visualization", "flowchart", "architecture"]
+}

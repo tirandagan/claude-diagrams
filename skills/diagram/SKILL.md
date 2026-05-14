@@ -194,12 +194,91 @@ After saving all files, show the user:
 - Display the image inline if possible (use the Read tool to show the PNG)
 - Offer to refine or adjust the diagram
 
+## Kroki API Gotchas (Read Before Debugging)
+
+### `%` character causes HTTP 400 — URL-decode trap
+
+**Root cause:** When no `Content-Type` is sent, curl defaults to `application/x-www-form-urlencoded`, causing Kroki to URL-decode the POST body. Any `%` not followed by two valid hex digits (e.g., "35%", "IV drop of 20%") is invalid URL encoding → `400 Internal Server Error`.
+
+**Fix (already in the curl commands above):** Always include `-H "Content-Type: text/plain"`. This prevents URL-decoding entirely. `%` in data values, labels, subtitles, and axis titles all pass through correctly.
+
+**Do NOT** work around by replacing `%` with `pct` in labels — just use the correct Content-Type.
+
+### Mermaid YAML frontmatter causes 400
+
+Mermaid's `---\ntitle: ...\n---` frontmatter block is a Mermaid 10+ feature. Kroki's bundled Mermaid may be older. Strip all frontmatter before POSTing:
+```bash
+tail -n +4 diagram.mmd > diagram-clean.mmd  # skip lines 1–3 (---, title, ---)
+curl ... --data-binary @diagram-clean.mmd
+```
+
+### Mermaid `\n` in node labels renders literally
+
+`["Line 1\nLine 2"]` renders as literal `\n` in SVG text, causing XML parse errors. Use `<br/>` for HTML line breaks inside Mermaid node labels:
+```
+Node["First line<br/>Second line"]
+```
+
+### Vega-Lite: `strokeDash` as encoding channel corrupts SVG
+
+Never use `strokeDash` as an encoding channel (e.g., `"encoding": {"strokeDash": {"field": "..."} }`). This causes SVG corruption in Kroki's Vega-Lite renderer. Use `strokeDash` only as a **mark property**:
+```json
+"mark": {"type": "line", "strokeDash": [4, 4]}
+```
+
+### Vega-Lite: scale domain mismatch across layers causes 400
+
+When multiple layers share the same field (e.g., `"x": {"field": "price"}`), if one layer defines `"scale": {"domain": [...]}` and another doesn't, Kroki's renderer crashes with a 400. **Be consistent: either all layers define the domain or none do.**
+
+```json
+// BAD — layer 1 has domain, layer 2 doesn't
+{"layer": [
+  {"encoding": {"x": {"field": "price", "scale": {"domain": [20000, 22000]}}}},
+  {"encoding": {"x": {"field": "price"}}}   // ← no domain = crash
+]}
+
+// GOOD — both specify domain, or move domain to top-level encoding
+{"encoding": {"x": {"field": "price", "scale": {"domain": [20000, 22000]}}},
+ "layer": [
+   {"mark": {"type": "line", "color": "#94a3b8"}},
+   {"mark": {"type": "line", "color": "#2563eb"}}
+]}
+```
+
+### Vega-Lite: static annotation text renders once per data row
+
+A text mark layer without its own data inherits the parent dataset and renders one text element per row. Add an empty single-row dataset to annotation layers:
+```json
+{
+  "data": {"values": [{}]},
+  "mark": {"type": "text", "text": "Annotation label", "x": 400, "y": 30},
+  ...
+}
+```
+
+### Vega-Lite: layer ordering determines Z-index
+
+Layers render in array order — earlier = lower (behind). Always place annotation text layers **last** (after area fills, bars, lines) so they appear on top:
+```
+Layer 0: rect/area (background fills)
+Layer 1: line/bar (main data)
+Layer 2: points
+Layer 3: text annotations  ← must be last
+```
+
+### Vega-Lite: legend label truncation
+
+Legend boxes have fixed width (~170px). Labels longer than ~20–22 characters at 12px font get truncated with "…". Keep domain strings short:
+- `"Bull Call Spread (buy 21000, sell 21200, cost 80pts)"` → truncated
+- `"Bull Call Spread (debit)"` → fits
+
 ## Error Handling
 
 - If Kroki API returns an error, **read the error message** from the response body and fix the script accordingly
 - If a particular diagram type doesn't support PNG, try SVG only
 - If the diagram is too complex for a single view, suggest breaking it into multiple diagrams
 - Always validate the script syntax before sending to Kroki
+- **HTTP 400 "Internal Server Error" on Vega-Lite:** almost always one of: missing `Content-Type: text/plain`, `%` in spec text, scale domain mismatch, or `strokeDash` encoding. Check in that order.
 
 ## File Naming Convention
 

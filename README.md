@@ -13,21 +13,17 @@ Describe what you want to visualize and the plugin will:
 
 ## Supported diagram types
 
-| Category | Types |
-|---|---|
-| **UML** | Sequence, Activity, Class, State, Use Case, Deployment (PlantUML) |
-| **Architecture** | C4 Model, D2, Block Diagrams |
-| **Data** | ERD, DBML, GraphViz dependency graphs |
-| **Flow** | Flowcharts (Mermaid), Decision Trees |
-| **Infrastructure** | Network (NwDiag), Rack, Packet |
-| **Project** | Gantt Charts, Mind Maps |
-| **Other** | WaveDrom, WireViz, Vega-Lite, Ditaa, and more |
+| Category           | Types                                                             |
+| ------------------ | ----------------------------------------------------------------- |
+| **UML**            | Sequence, Activity, Class, State, Use Case, Deployment (PlantUML) |
+| **Architecture**   | C4 Model, D2, Block Diagrams                                      |
+| **Data**           | ERD, DBML, GraphViz dependency graphs                             |
+| **Flow**           | Flowcharts (Mermaid), Decision Trees                              |
+| **Infrastructure** | Network (NwDiag), Rack, Packet                                    |
+| **Project**        | Gantt Charts, Mind Maps                                           |
+| **Other**          | WaveDrom, WireViz, Vega-Lite, Ditaa, and more                     |
 
 ## Installation
-
-### Option A: Quick install (recommended)
-
-This method downloads the plugin and makes it available every time you use Claude Code.
 
 **Step 1: Open your terminal**
 
@@ -40,43 +36,10 @@ This method downloads the plugin and makes it available every time you use Claud
 Copy and paste this command into your terminal and press Enter:
 
 ```bash
-git clone https://github.com/tirandagan/claude-diagrams.git ~/.claude-plugins/claude-diagrams
+git clone https://github.com/LabinatorSolutions/claude-diagrams.git ~/.claude/skills/
 ```
 
 This downloads the plugin to a folder on your computer. If you see an error about `git` not being found, you need to [install Git](https://git-scm.com/downloads) first.
-
-**Step 3: Start Claude Code with the plugin**
-
-```bash
-claude --plugin-dir ~/.claude-plugins/claude-diagrams
-```
-
-That's it! The `/diagrams:diagram` command is now available in your Claude Code session.
-
-> **Tip:** You'll need to include `--plugin-dir ~/.claude-plugins/claude-diagrams` each time you start Claude Code. To avoid this, see Option B below.
-
-### Option B: Install via marketplace (permanent)
-
-If this plugin is available in a Claude Code marketplace, you can install it permanently so it loads automatically every session:
-
-```bash
-claude plugins install diagrams
-```
-
-If the plugin isn't found, you can add this repository as a marketplace source first:
-
-```bash
-claude plugins marketplace add https://github.com/tirandagan/claude-diagrams
-claude plugins install diagrams
-```
-
-### Updating the plugin
-
-To get the latest version:
-
-```bash
-cd ~/.claude-plugins/claude-diagrams && git pull
-```
 
 ## Usage
 
@@ -97,11 +60,11 @@ cd ~/.claude-plugins/claude-diagrams && git pull
 
 All files are saved to a `diagrams/` directory in your current project:
 
-| File | Description |
-|---|---|
-| `{slug}.md` | Markdown with diagram rationale and design decisions |
-| `{slug}.png` | Rendered PNG image |
-| `{slug}.svg` | Rendered SVG image |
+| File           | Description                                          |
+| -------------- | ---------------------------------------------------- |
+| `{slug}.md`    | Markdown with diagram rationale and design decisions |
+| `{slug}.png`   | Rendered PNG image                                   |
+| `{slug}.svg`   | Rendered SVG image                                   |
 | `{slug}.{ext}` | Source script (`.puml`, `.mmd`, `.dot`, `.d2`, etc.) |
 
 ## Requirements

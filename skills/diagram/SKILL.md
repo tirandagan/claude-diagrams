@@ -1,9 +1,11 @@
 ---
 name: diagram
-description: Generate professional diagrams from natural language descriptions. Analyzes the subject matter, selects the optimal diagram type, generates the diagram script, and renders it via Kroki.io API into PNG and SVG images. Use when the user wants to create flowcharts, sequence diagrams, architecture diagrams, ERDs, workflows, mind maps, network diagrams, or any other visual diagram.
+description: Generate professional diagrams from natural language descriptions. Analyzes the subject matter, selects the optimal diagram type, writes the diagram source, and renders it through the Kroki API into PNG and SVG images. Use when the user wants to create, draw or visualize a flowchart, sequence diagram, architecture or C4 diagram, ERD or database schema, workflow, state machine, class diagram, mind map, Gantt chart, network or infrastructure diagram, or any other diagram, including a diagram of code, files or documents in their project.
 argument-hint: "[description of what to diagram]"
-allowed-tools: Read, Grep, Glob, Bash(curl *), Bash(mkdir *), Bash(ls *)
+allowed-tools: Read, Grep, Glob, Write, Bash(curl *), Bash(mkdir *), Bash(ls *), Bash(printenv KROKI_URL)
 ---
+
+<!-- Diagrams, a Claude Code plugin written by Tiran Dagan, copyright 2026, tiran@tirandagan.com. MIT licensed. https://github.com/tirandagan/claude-diagrams -->
 
 # Diagram Generator Skill
 
@@ -130,47 +132,46 @@ Diagrams MUST be designed to fit comfortably on a screen without horizontal scro
 
 ### Step 5: Render via Kroki API
 
-Save the diagram script to a temporary file, then call the Kroki API to generate **both PNG and SVG**:
+**Choose the Kroki server once per session.** Run `printenv KROKI_URL`. If it prints a URL (for example a self-hosted `http://localhost:8000`), use it as `{base}`, without a trailing slash. If it prints nothing, use `https://kroki.io`.
+
+**Write the source first.** Create the output directory with `mkdir -p diagrams`, then use the Write tool to save the diagram source to `diagrams/{slug}.{ext}`. That file is one of the deliverables, so there is no temporary file to clean up.
+
+Then render **SVG first** (it fails fast and shows the clearest errors), then PNG:
 
 ```bash
-# Create the output directory
-mkdir -p diagrams
+curl -sS -o "diagrams/{slug}.svg" -w "%{http_code}\n" -X POST "{base}/{diagram_type}/svg" \
+  -H "Content-Type: text/plain" --data-binary @"diagrams/{slug}.{ext}"
 
-# Generate PNG
-curl -s -X POST "https://kroki.io/{diagram_type}/png" \
-  -H "Content-Type: text/plain" \
-  --data-binary @/path/to/script-file \
-  -o "diagrams/{slug}.png"
-
-# Generate SVG
-curl -s -X POST "https://kroki.io/{diagram_type}/svg" \
-  -H "Content-Type: text/plain" \
-  --data-binary @/path/to/script-file \
-  -o "diagrams/{slug}.svg"
+curl -sS -o "diagrams/{slug}.png" -w "%{http_code}\n" -X POST "{base}/{diagram_type}/png" \
+  -H "Content-Type: text/plain" --data-binary @"diagrams/{slug}.{ext}"
 ```
 
 Where:
+- `{base}` is the Kroki server chosen above
 - `{diagram_type}` is the API name from the table (e.g., `plantuml`, `mermaid`, `graphviz`)
 - `{slug}` is a short, kebab-case name derived from the diagram description (e.g., `user-auth-flow`, `payment-sequence`, `system-architecture`)
 
 **Important API notes:**
-- Base URL: `https://kroki.io/`
-- Use `--data-binary` (NOT `-d`) to preserve newlines in the diagram source
-- Write the script to a temp file first, then use `@filename` — do not try to pass complex multiline content inline
-- If a render fails, check the error response — Kroki returns descriptive error messages
+- Each command prints the HTTP status. **Only `200` is a success.** On `400`, Kroki writes its error message (with a line number) into the output file in place of an image. Read that file, fix the source, and render again.
+- Use `--data-binary` (NOT `-d`) to preserve newlines in the diagram source.
+- Keep `Content-Type: text/plain`. It sends the source byte for byte, so characters such as `%` and `&` arrive unchanged.
+- Never pass multiline source inline on the command line; always use `@file`.
 
 **Format compatibility — SVG-only diagram types:**
-- `d2` — only supports SVG output (no PNG). Generate SVG only for D2 diagrams.
+- `d2` — only supports SVG output (Kroki answers PNG requests with `400 Unsupported output format`). Render SVG only for D2 diagrams.
 - All other diagram types (plantuml, mermaid, graphviz, c4plantuml, nwdiag, blockdiag, erd, dbml, etc.) support both PNG and SVG.
+
+**Known Kroki pitfalls:**
+- PlantUML activity diagrams with swimlanes: declare the first swimlane (`|Lane|`) **before** `start`, or Kroki returns `This swimlane must be defined at the start of the diagram`.
 
 ### Step 6: Verify the Rendered Images
 
-After rendering, verify the files were created successfully:
-- Check file sizes (PNG should be > 1KB for any real diagram, SVG should be > 500 bytes)
-- If a file is suspiciously small or empty, the render likely failed — read the file contents to check for error messages
-- If the render failed, fix the diagram script and retry
+After rendering, verify every file:
+- The HTTP status printed for it was `200`
+- Sizes look like real images (`ls -la diagrams/{slug}.*`): a real PNG is > 1 KB and a real SVG is > 500 bytes. After a non-200 status the file is a short piece of Kroki's error text, not an image.
+- If a render failed, fix the diagram source and render again. Never present a file that holds an error message as a diagram. If you cannot fix it after a few attempts, tell the user which file holds Kroki's error text.
 
-### Step 7: Save the Three Output Files
+### Step 7: Save the Four Output Files
 
 Save these files in the `diagrams/` directory (create it if it doesn't exist):
 
@@ -179,12 +180,12 @@ Save these files in the `diagrams/` directory (create it if it doesn't exist):
    - What the diagram represents
    - Why you chose this particular diagram type over alternatives
    - Key design decisions (layout, grouping, color coding)
-   - Embedded reference to the image: `![{title}](./{slug}.png)`
+   - Embedded reference to the image: `![{title}](./{slug}.png)` (for D2, which has no PNG, embed `./{slug}.svg`)
    - Any assumptions made about the subject matter
 
-2. **`diagrams/{slug}.png`** and **`diagrams/{slug}.svg`** — The rendered diagram images (already saved in Step 5)
+2. **`diagrams/{slug}.png`** and **`diagrams/{slug}.svg`** — The rendered diagram images (already saved in Step 5; SVG only for D2)
 
-3. **`diagrams/{slug}.{ext}`** — The diagram script file in its native format (`.puml`, `.mmd`, `.dot`, `.d2`, etc.)
+3. **`diagrams/{slug}.{ext}`** — The diagram source in its native format (`.puml`, `.mmd`, `.dot`, `.d2`, etc.), already written in Step 5
 
 ### Step 8: Present Results
 
@@ -192,7 +193,10 @@ After saving all files, show the user:
 - The diagram type chosen and why
 - The file paths of all saved files
 - Display the image inline if possible (use the Read tool to show the PNG)
+- Which Kroki server rendered it (`kroki.io` or their `KROKI_URL`), in one short line
 - Offer to refine or adjust the diagram
+
+When the user asks for changes, edit `diagrams/{slug}.{ext}` and re-render the same slug, so the four files stay in step.
 
 ## Error Handling
 

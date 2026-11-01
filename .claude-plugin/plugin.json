@@ -1,10 +1,19 @@
 {
   "name": "diagrams",
-  "description": "Generate professional diagrams from natural language descriptions using Kroki.io. Supports 20+ diagram types including PlantUML, Mermaid, GraphViz, D2, C4, ERD, and more. Automatically selects the optimal diagram type, generates styled scripts, and renders PNG and SVG images.",
-  "version": "1.0.0",
+  "displayName": "Diagrams",
+  "version": "1.1.0",
+  "description": "Drawing a diagram by hand takes longer than describing it. Describe what you want in plain English, or point at your code or docs, and Claude picks the right diagram type from 20+ (PlantUML sequence, activity, class, state and C4; Mermaid flowcharts and Gantt; GraphViz; D2; ERD and DBML; network and more), writes clean, styled source, renders it through Kroki into PNG and SVG, checks the render, and saves the image, its editable source and a short design note to diagrams/ in your project. Uses the free kroki.io service, or your own Kroki server.",
   "author": {
-    "name": "Tiran Dagan"
+    "name": "Tiran Dagan",
+    "email": "tiran@tirandagan.com",
+    "url": "https://bepreparedsolutions.co"
   },
+  "homepage": "https://github.com/tirandagan/claude-diagrams",
+  "repository": "https://github.com/tirandagan/claude-diagrams",
+  "documentationUrl": "https://github.com/tirandagan/claude-diagrams#readme",
+  "supportUrl": "https://github.com/tirandagan/claude-diagrams/issues",
+  "privacyPolicyUrl": "https://github.com/tirandagan/claude-diagrams#privacy",
   "license": "MIT",
-  "keywords": ["diagrams", "kroki", "plantuml", "mermaid", "graphviz", "visualization", "flowchart", "architecture"]
+  "keywords": ["diagrams", "kroki", "plantuml", "mermaid", "graphviz", "d2", "c4", "erd", "visualization", "flowchart", "architecture", "sequence-diagram"],
+  "icon": "./.claude-plugin/icon.png"
 }

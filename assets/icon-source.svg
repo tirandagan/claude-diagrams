@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" role="img" aria-label="Diagrams">
+  <!-- Source for the directory listing icon in .claude-plugin/. Re-render it at 1024x1024 if you change this. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a0d16"/><stop offset="100%" stop-color="#18203a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+  <g opacity=".07" stroke="#f5f7fa" stroke-width="2">
+    <path d="M0 256h1024M0 512h1024M0 768h1024M256 0v1024M512 0v1024M768 0v1024"/>
+  </g>
+  <!-- connectors -->
+  <g fill="none" stroke="#9aa4bd" stroke-width="16" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M512 290 v86"/>
+    <path d="M420 512 h-128 v124"/>
+    <path d="M604 512 h128 v124"/>
+  </g>
+  <g fill="#9aa4bd">
+    <path d="M484 366 l28 36 l28 -36 z"/>
+    <path d="M264 626 l28 36 l28 -36 z"/>
+    <path d="M704 626 l28 36 l28 -36 z"/>
+  </g>
+  <!-- start node -->
+  <rect x="352" y="150" width="320" height="140" rx="70" fill="#141a2e" stroke="#f5f7fa" stroke-width="14"/>
+  <path d="M452 220 h120" stroke="#f5f7fa" stroke-width="22" stroke-linecap="round"/>
+  <!-- decision -->
+  <path d="M512 410 L612 512 L512 614 L412 512 Z" fill="#ef4444"/>
+  <!-- two outcome nodes -->
+  <rect x="152" y="670" width="280" height="190" rx="28" fill="#141a2e" stroke="#2f3a5c" stroke-width="12"/>
+  <path d="M212 742 h160 M212 794 h104" stroke="#9aa4bd" stroke-width="20" stroke-linecap="round"/>
+  <rect x="592" y="670" width="280" height="190" rx="28" fill="#141a2e" stroke="#2f3a5c" stroke-width="12"/>
+  <path d="M652 742 h160 M652 794 h104" stroke="#9aa4bd" stroke-width="20" stroke-linecap="round"/>
+</svg>

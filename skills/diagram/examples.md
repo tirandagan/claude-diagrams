@@ -64,9 +64,10 @@ skinparam ActivityDiamondBorderColor #E74C3C
 
 title Order Processing Workflow
 
+' PlantUML requires the first swimlane to be declared before `start`
+|#AliceBlue|Customer|
 start
-
-:Customer places order;
+:Place order;
 
 |#LightBlue|Payment Service|
 :Validate payment details;

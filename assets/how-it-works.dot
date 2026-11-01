@@ -1,0 +1,28 @@
+// Source for the README's "how it works" graphic, drawn the way the skill draws:
+// top to bottom, labelled edges, colour with meaning. Re-render it through Kroki's
+// graphviz/svg endpoint after any change.
+digraph HowItWorks {
+  label="How /diagrams:diagram turns a sentence into a diagram"; labelloc=t; fontsize=18;
+  fontname="Helvetica"; rankdir=TB; nodesep=0.5; ranksep=0.45; bgcolor=white;
+  node [shape=box, style="rounded,filled", fontname="Helvetica", fontsize=12,
+        fillcolor="#F8FAFC", color="#334155", penwidth=1.4, margin="0.22,0.1"];
+  edge [fontname="Helvetica", fontsize=10, color="#64748B", fontcolor="#475569"];
+
+  you     [label="You\n\"CI/CD pipeline from push to production\"", fillcolor="#EEF2FF", color="#4F46E5"];
+  analyze [label="1. Analyze\nentities, relationships, flow vs. structure"];
+  choose  [label="2. Choose the diagram type\nPlantUML, Mermaid, GraphViz, D2, C4, ERD ..."];
+  write   [label="3. Write styled source\ndiagrams/<slug>.<ext>"];
+  kroki   [label="Kroki\nkroki.io, or your own server via KROKI_URL", shape=box, style="rounded,filled,dashed", fillcolor="#FFF7ED", color="#EA580C"];
+  check   [label="4. Check the render\nHTTP 200 and a real image?", shape=diamond, style=filled, fillcolor="#FEF2F2", color="#DC2626", margin="0.05,0.05"];
+  fix     [label="Read Kroki's error,\nfix the source", fillcolor="#FEF2F2", color="#DC2626"];
+  save    [label="5. Save and explain\n<slug>.md  ·  .png  ·  .svg  ·  source", fillcolor="#F0FDF4", color="#16A34A"];
+
+  you -> analyze [label=" /diagrams:diagram"];
+  analyze -> choose;
+  choose -> write;
+  write -> kroki [label=" POST source as text"];
+  kroki -> check [label=" PNG + SVG"];
+  check -> save [label=" yes"];
+  check -> fix [label=" no"];
+  fix -> write [label=" retry", style=dashed, constraint=false];
+}

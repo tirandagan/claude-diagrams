@@ -1,0 +1,15 @@
+{
+  "name": "tirandagan-diagrams",
+  "description": "The Diagrams plugin for Claude Code, by Tiran Dagan.",
+  "owner": {
+    "name": "Tiran Dagan",
+    "email": "tiran@tirandagan.com"
+  },
+  "plugins": [
+    {
+      "name": "diagrams",
+      "source": "./",
+      "description": "Professional diagrams from a sentence: Claude picks the diagram type, writes styled source, and renders PNG and SVG through Kroki."
+    }
+  ]
+}

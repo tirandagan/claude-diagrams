@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 220" width="1200" height="220" role="img" aria-label="Built by Tiran Dagan, co-founder of BePrepared Solutions">
+  <defs>
+    <linearGradient id="bb" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0a0d16"/><stop offset="100%" stop-color="#1a1013"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="220" rx="10" fill="url(#bb)"/>
+  <rect x="0" y="0" width="5" height="220" rx="2" fill="#ef4444"/>
+
+  <text x="52" y="58" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="13" letter-spacing="3" fill="#6b7590">BUILT BY</text>
+  <text x="52" y="100" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="34" font-weight="700" fill="#f5f7fa">Tiran Dagan</text>
+  <text x="52" y="130" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="17" fill="#9aa4bd">Co-founder, BePrepared Solutions</text>
+  <text x="52" y="164" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="15" fill="#6b7590">Advises boards across media, telecom, healthcare and tech. Teaches graduate students to build with AI.</text>
+  <text x="52" y="188" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="15" fill="#6b7590">This skill came out of wiring Claude into a production codebase.</text>
+
+  <g transform="translate(830,52)">
+    <text x="0" y="34" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="40" font-weight="800" fill="#ef4444">Be</text>
+    <text x="52" y="34" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="40" font-weight="800" fill="#f5f7fa">Prepared</text>
+    <text x="0" y="60" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="13" letter-spacing="5.5" fill="#6b7590">SOLUTIONS</text>
+    <g font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="13">
+      <text x="0" y="96" fill="#ef4444">Be<tspan fill="#9aa4bd">Aware</tspan></text>
+      <text x="84" y="96" fill="#ef4444">Be<tspan fill="#9aa4bd">Ready</tspan></text>
+      <text x="163" y="96" fill="#ef4444">Be<tspan fill="#9aa4bd">Equipped</tspan></text>
+      <text x="266" y="96" fill="#ef4444">Be<tspan fill="#9aa4bd">Advised</tspan></text>
+    </g>
+    <text x="0" y="124" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif" font-size="13" fill="#5c6580">bepreparedsolutions.co</text>
+  </g>
+</svg>

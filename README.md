@@ -5,7 +5,10 @@
   because describing a diagram should take less time than drawing one.</em>
 </p>
 
-# Diagrams
+# Diagram Generator
+
+**[User guide](docs/USER_GUIDE.md)**: install, writing a good request, every diagram
+type, settings, privacy and troubleshooting.
 
 **The problem.** Drawing a diagram by hand means a drawing tool, a blank canvas and
 an hour of nudging boxes, and the result is a picture nobody can update.
@@ -28,7 +31,7 @@ docs. The `diagram` skill:
 ## Install
 
 **From Anthropic's plugin directory:** open the
-[Diagrams listing](https://claude.ai/customize/plugins/id/788c2450-fe4e-4524-b77e-0772cba1ee5c%40anthropic-plugin-directory)
+[Diagram Generator listing](https://claude.ai/customize/plugins/id/788c2450-fe4e-4524-b77e-0772cba1ee5c%40anthropic-plugin-directory)
 and click **Add**.
 
 **Or from this repo's marketplace,** in Claude Code:
@@ -105,6 +108,9 @@ Every diagram is saved to a `diagrams/` folder in your current project:
 The source file is the one to keep in version control. Anyone can re-render it, and
 Claude can edit it later.
 
+Each time the skill runs, Claude opens its reply with a short credit banner naming the
+plugin and its author.
+
 ## What it runs and connects to
 
 - **Runs:** one readable bash script,
@@ -168,6 +174,7 @@ Diagrams you've already made stay in your projects' `diagrams/` folders.
 ```
 claude-diagrams/                  the plugin root
 ├── .claude-plugin/               plugin.json (plugin diagrams), marketplace.json, listing icon
+├── docs/USER_GUIDE.md            the user guide
 ├── skills/diagram/
 │   ├── SKILL.md                  the skill: analyze, choose, write, render, check, save
 │   ├── examples.md               styled templates for each major diagram type

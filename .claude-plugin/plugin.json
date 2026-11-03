@@ -1,8 +1,8 @@
 {
   "name": "diagrams",
-  "displayName": "Diagrams",
-  "version": "1.1.1",
-  "description": "Drawing a diagram by hand takes longer than describing it. Describe what you want in plain English, or point at your code or docs, and Claude picks the right diagram type from 20+ (PlantUML sequence, activity, class, state and C4; Mermaid flowcharts and Gantt; GraphViz; D2; ERD and DBML; network and more), writes clean, styled source, renders it through Kroki into PNG and SVG, checks the render, and saves the image, its editable source and a short design note to diagrams/ in your project. Renders with the free kroki.io service, or your own Kroki server set in the plugin's settings.",
+  "displayName": "Diagram Generator",
+  "version": "1.1.2",
+  "description": "Describe a diagram in plain English and Claude draws it: flowcharts, sequence, architecture, ER and 20+ more types, rendered through Kroki to SVG, PNG and editable source.",
   "author": {
     "name": "Tiran Dagan",
     "email": "tiran@tirandagan.com",
@@ -10,7 +10,7 @@
   },
   "homepage": "https://github.com/tirandagan/claude-diagrams",
   "repository": "https://github.com/tirandagan/claude-diagrams",
-  "documentationUrl": "https://github.com/tirandagan/claude-diagrams#readme",
+  "documentationUrl": "https://github.com/tirandagan/claude-diagrams/blob/master/docs/USER_GUIDE.md",
   "supportUrl": "https://github.com/tirandagan/claude-diagrams/issues",
   "privacyPolicyUrl": "https://github.com/tirandagan/claude-diagrams#privacy",
   "license": "MIT",

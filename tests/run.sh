@@ -41,8 +41,14 @@ if p.get("version") != top: errs.append("plugin.json version %s != CHANGELOG %s"
 if not re.fullmatch(r"\d+\.\d+\.\d+", p.get("version", "")): errs.append("version is not semver")
 if [e.get("name") for e in m.get("plugins", [])] != [p.get("name")]: errs.append("marketplace entry name != plugin name")
 if m.get("name", "").startswith(("claude-", "anthropic-")): errs.append("reserved marketplace name prefix")
-for k in ("description", "author", "homepage", "repository", "license"):
+for k in ("displayName", "description", "author", "homepage", "repository", "license"):
     if not p.get(k): errs.append("plugin.json missing " + k)
+# The directory shows the description as the listing's short description.
+if len(p.get("description", "")) > 200: errs.append("description over 200 characters (%d)" % len(p["description"]))
+# The documentation link must name a file that exists in this repo on master.
+doc = re.fullmatch(r"https://github\.com/tirandagan/claude-diagrams/blob/master/(.+)", p.get("documentationUrl", ""))
+if not doc: errs.append("documentationUrl is not a file on master: %r" % p.get("documentationUrl"))
+elif not __import__("os").path.isfile(doc.group(1)): errs.append("documentationUrl names a missing file: " + doc.group(1))
 for k, o in p.get("userConfig", {}).items():
     # "options" would stop clients older than 2.1.271 from loading the plugin at all.
     if "options" in o: errs.append("userConfig %s uses options" % k)
@@ -77,6 +83,22 @@ for t in tools:
     if t in ("Read", "Grep", "Glob", "Write", "Edit"): continue
     if re.fullmatch(r"Bash\(bash \$\{CLAUDE_PLUGIN_ROOT\}/[\w./-]+\.sh:\*\)", t): continue
     print("not allowed: " + t)
+PY
+)"
+# The credit banner Claude prints on every invocation: it must keep the author's
+# credit, and every line must be the same width or the box breaks in the terminal.
+report "SKILL.md credit banner is intact and its box lines up" "$(python3 - "$SK" <<'PY'
+import re, sys, unicodedata
+t = open(sys.argv[1], encoding="utf-8").read()
+m = re.search(r"## Credit Banner[^\n]*\n.*?```text\n(.*?)\n```", t, re.S)
+if not m: print("no credit banner block"); sys.exit()
+b = m.group(1)
+for s in ("D I A G R A M   G E N E R A T O R", "Written by Tiran Dagan", "tiran@tirandagan.com", "Copyright © 2026"):
+    if s not in b: print("banner lost: " + s)
+w = lambda l: sum(2 if unicodedata.east_asian_width(c) in "WF" else 1 for c in l)
+widths = {w(l) for l in b.splitlines()}
+if len(widths) != 1: print("banner lines differ in width: %s" % sorted(widths))
+if max(widths) > 80: print("banner wider than an 80-column terminal")
 PY
 )"
 report "SKILL.md renders through the plugin's script" "$(grep -q 'bash ${CLAUDE_PLUGIN_ROOT}/skills/diagram/scripts/render.sh ' "$SK" || echo missing)"
@@ -131,7 +153,7 @@ echo "docs"
 report "relative links resolve" "$(cd "$ROOT" && python3 - <<'PY'
 import re, os, glob
 bad = []
-for md in glob.glob("*.md") + glob.glob("skills/*/*.md"):
+for md in glob.glob("*.md") + glob.glob("skills/*/*.md") + glob.glob("docs/*.md"):
     text = re.sub(r"```.*?```", "", open(md, encoding="utf-8").read(), flags=re.S)
     text = re.sub(r"`[^`\n]*`", "", text)  # inline code holds templates like ./{slug}.png
     for link in re.findall(r"\]\(([^)#\s]+)(?:#[^)]*)?\)", text):
@@ -139,6 +161,16 @@ for md in glob.glob("*.md") + glob.glob("skills/*/*.md"):
         if not os.path.exists(os.path.normpath(os.path.join(os.path.dirname(md), link))):
             bad.append("%s -> %s" % (md, link))
 print("\n".join(bad))
+PY
+)"
+report "the user guide's in-page links point at real headings" "$(cd "$ROOT" && python3 - <<'PY'
+import re
+t = open("docs/USER_GUIDE.md", encoding="utf-8").read()
+body = re.sub(r"```.*?```", "", t, flags=re.S)
+slug = lambda h: re.sub(r"[^\w\- ]", "", h.strip().lower()).replace(" ", "-")
+heads = {slug(h) for h in re.findall(r"^#{1,6} (.+)$", body, re.M)}
+for a in re.findall(r"\]\(#([^)]+)\)", body):
+    if a not in heads: print("no heading for #" + a)
 PY
 )"
 report "README has the one-line marketplace install" "$(grep -q '/plugin install diagrams --marketplace tirandagan/claude-diagrams' "$ROOT/README.md" || echo missing)"

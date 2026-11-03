@@ -5,12 +5,11 @@
 #   FAKE_DOWN  fail like an unreachable server (curl exit 7)
 #   FAKE_HTML  answer HTTP 200 with an HTML page instead of an image
 # Every request URL is appended to fake-curl.log in the folder render.sh renders for.
-out=""; fmt=""; url=""
+out=""; url=""
 while [ $# -gt 0 ]; do
   case "$1" in
     -o) out="$2"; shift 2;;
-    -w) fmt="$2"; shift 2;;
-    -X|-H|--data-binary|--max-time|--connect-timeout|--retry) shift 2;;
+    -w|-X|-H|--data-binary|--max-time|--connect-timeout|--retry) shift 2;;
     -*) shift;;
     *) url="$1"; shift;;
   esac

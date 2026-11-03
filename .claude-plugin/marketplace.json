@@ -1,6 +1,6 @@
 {
   "name": "tirandagan-diagrams",
-  "description": "The Diagrams plugin for Claude Code, by Tiran Dagan.",
+  "description": "Diagram Generator, a Claude Code plugin by Tiran Dagan.",
   "owner": {
     "name": "Tiran Dagan",
     "email": "tiran@tirandagan.com"
@@ -9,7 +9,7 @@
     {
       "name": "diagrams",
       "source": "./",
-      "description": "Professional diagrams from a sentence: Claude picks the diagram type, writes styled source, and renders PNG and SVG through Kroki."
+      "description": "Describe a diagram in plain English and Claude draws it: flowcharts, sequence, architecture, ER and 20+ more types, rendered through Kroki to SVG, PNG and editable source."
     }
   ]
 }

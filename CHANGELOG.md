@@ -1,5 +1,27 @@
 # Changelog
 
+## 1.1.2 (2026-11-02)
+
+**Changed**
+- The plugin is listed as **Diagram Generator** instead of Diagrams. Its install name,
+  `diagrams`, and the `/diagrams:diagram` command stay the same, so existing installs
+  keep working.
+- A short description (under 200 characters) for the plugin directory listing.
+
+**Added**
+- A user guide, [docs/USER_GUIDE.md](docs/USER_GUIDE.md): install, writing a good
+  request, every diagram type, refining, settings, privacy and troubleshooting. The
+  plugin's documentation link points to it.
+- A credit banner. Each time the skill runs, Claude opens its reply with a short boxed
+  banner: Diagrams, written by Tiran Dagan (tiran@tirandagan.com), copyright 2026.
+
+**Tests**
+- A check that the banner keeps its credit and that its box lines up.
+- Checks that the documentation link names a file in the repo, that the guide's links
+  resolve, and that the description stays short enough for the listing.
+- The fake curl no longer sets a variable it never uses (shellcheck SC2034, which
+  failed CI on 1.1.1).
+
 ## 1.1.1 (2026-11-02)
 
 Clears the plugin directory's policy hold on 1.1.0: "Pre-approves broad shell access

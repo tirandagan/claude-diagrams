@@ -8,7 +8,6 @@ Reference examples for the most commonly used diagram types. Use these as starti
 @startuml
 skinparam backgroundColor white
 skinparam shadowing false
-skinparam defaultFontName "Segoe UI"
 skinparam defaultFontSize 13
 skinparam ArrowColor #555555
 skinparam ArrowFontSize 12
@@ -57,7 +56,6 @@ deactivate app
 @startuml
 skinparam backgroundColor white
 skinparam shadowing false
-skinparam defaultFontName "Segoe UI"
 skinparam ActivityBorderColor #2C3E50
 skinparam ActivityBackgroundColor #ECF0F1
 skinparam ActivityDiamondBorderColor #E74C3C
@@ -209,7 +207,7 @@ gantt
 digraph dependencies {
     graph [
         rankdir=LR
-        fontname="Segoe UI"
+        fontname="Arial,Helvetica,sans-serif"
         bgcolor=white
         label="Module Dependency Graph"
         labelloc=t
@@ -219,7 +217,7 @@ digraph dependencies {
     node [
         shape=box
         style="rounded,filled"
-        fontname="Segoe UI"
+        fontname="Arial,Helvetica,sans-serif"
         fontsize=12
         fillcolor="#ECF0F1"
         color="#2C3E50"
@@ -227,7 +225,7 @@ digraph dependencies {
 
     edge [
         color="#7F8C8D"
-        fontname="Segoe UI"
+        fontname="Arial,Helvetica,sans-serif"
         fontsize=10
     ]
 

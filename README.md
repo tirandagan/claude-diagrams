@@ -107,13 +107,15 @@ Claude can edit it later.
 
 ## What it runs and connects to
 
-- **Runs:** `curl`, to send diagram source to Kroki; `mkdir` and `ls`, for the
-  `diagrams/` folder; `printenv KROKI_URL`, to find your Kroki server. No scripts,
-  no hooks, no MCP servers, nothing in the background.
+- **Runs:** one readable bash script,
+  [`skills/diagram/scripts/render.sh`](skills/diagram/scripts/render.sh), which uses
+  `curl` to send a diagram's source to Kroki and saves the images it gets back. It's
+  the only command the skill runs without asking you. No hooks, no MCP servers,
+  nothing in the background.
 - **Reads:** files in your project only when you ask for a diagram of them, and the
-  `KROKI_URL` environment variable.
+  plugin's **Kroki server** setting. Nothing from your environment.
 - **Writes:** four files per diagram, in `diagrams/` under the current folder.
-- **Connects to:** `https://kroki.io`, or the server in `KROKI_URL` if you set one.
+- **Connects to:** `https://kroki.io`, or the Kroki server you set.
 - **Sends:** the diagram source text, and nothing else. No project files, paths or
   account details, no telemetry, no analytics, nothing to the author.
 
@@ -134,10 +136,12 @@ Kroki is open source and runs in one container:
 
 ```bash
 docker run -d -p 8000:8000 yuzutech/kroki
-export KROKI_URL=http://localhost:8000
 ```
 
-Set `KROKI_URL` in your shell profile so every Claude Code session sees it. Claude
+Then point the plugin at it: in Claude Code, run
+`/plugin configure diagrams@tirandagan-diagrams` (or `/config`) and set
+**Kroki server** to `http://localhost:8000`. If you installed from the directory, use
+the plugin name `/plugin` shows for it. Leave the setting empty to use kroki.io. Claude
 says which server rendered each diagram. Mermaid, BPMN and Excalidraw need extra
 companion containers; Kroki's
 [Docker guide](https://docs.kroki.io/kroki/setup/use-docker-or-podman/) has a
@@ -156,7 +160,7 @@ Diagrams you've already made stay in your projects' `diagrams/` folders.
 
 - Claude Code 2.1.275 or later for the one-line install; any version with plugin
   support for the other methods
-- `curl` on your PATH
+- `bash` and `curl` (macOS and Linux have both; on Windows, Git Bash or WSL)
 - Internet access to kroki.io, or a Kroki server of your own
 
 ## Layout
@@ -166,9 +170,11 @@ claude-diagrams/                  the plugin root
 ├── .claude-plugin/               plugin.json (plugin diagrams), marketplace.json, listing icon
 ├── skills/diagram/
 │   ├── SKILL.md                  the skill: analyze, choose, write, render, check, save
-│   └── examples.md               styled templates for each major diagram type
+│   ├── examples.md               styled templates for each major diagram type
+│   └── scripts/render.sh         sends the source to Kroki, saves SVG and PNG safely
 ├── assets/                       README graphics, the icon source, and the how-it-works source
-├── tests/run.sh                  offline checks; --live renders every template through Kroki
+├── tests/                        run.sh (offline checks, render.sh against a fake curl;
+│                                 --live renders every template through Kroki)
 ├── CHANGELOG.md
 └── LICENSE
 ```
@@ -176,7 +182,8 @@ claude-diagrams/                  the plugin root
 ## Verified against
 
 Claude Code **2.1.316** (plugin validation with the directory profile, marketplace
-install, and an end-to-end diagram), and kroki.io on 2026-11-01: every template in
+install, the Kroki server setting, and an end-to-end diagram that ran the render script
+without a permission prompt), and kroki.io on 2026-11-02: every template in
 `examples.md` renders to SVG and PNG (SVG only for D2). `tests/run.sh --live` repeats
 that check.
 

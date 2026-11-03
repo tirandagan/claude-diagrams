@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Stand-in for curl in tests/run.sh: answers render.sh's Kroki requests without a network.
+# Behaviour is chosen by markers in the request body:
+#   FAKE_400   answer HTTP 400 with an error message
+#   FAKE_DOWN  fail like an unreachable server (curl exit 7)
+#   FAKE_HTML  answer HTTP 200 with an HTML page instead of an image
+# Every request URL is appended to fake-curl.log in the folder render.sh renders for.
+out=""; fmt=""; url=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -o) out="$2"; shift 2;;
+    -w) fmt="$2"; shift 2;;
+    -X|-H|--data-binary|--max-time|--connect-timeout|--retry) shift 2;;
+    -*) shift;;
+    *) url="$1"; shift;;
+  esac
+done
+body="$(cat)"
+echo "$url" >> "$(dirname "$(dirname "$out")")/fake-curl.log"
+case "$body" in *FAKE_DOWN*) echo "curl: (7) Failed to connect" >&2; exit 7;; esac
+case "$body" in *FAKE_400*) printf 'Error 400: Syntax Error? (line: 2)' > "$out"; printf 400; exit 0;; esac
+case "$body" in *FAKE_HTML*) printf '<html><body>proxy login</body></html>' > "$out"; printf 200; exit 0;; esac
+case "$url" in
+  */png) printf '\211PNG\r\n\032\n\000\000\000\015IHDR\000\000\000\144\000\000\000\062\010\006\000\000\000' > "$out";;
+  */svg) printf '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"></svg>' > "$out";;
+esac
+printf 200

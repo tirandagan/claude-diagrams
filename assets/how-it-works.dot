@@ -12,7 +12,7 @@ digraph HowItWorks {
   analyze [label="1. Analyze\nentities, relationships, flow vs. structure"];
   choose  [label="2. Choose the diagram type\nPlantUML, Mermaid, GraphViz, D2, C4, ERD ..."];
   write   [label="3. Write styled source\ndiagrams/<slug>.<ext>"];
-  kroki   [label="Kroki\nkroki.io, or your own server via KROKI_URL", shape=box, style="rounded,filled,dashed", fillcolor="#FFF7ED", color="#EA580C"];
+  kroki   [label="Kroki\nkroki.io, or your own Kroki server", shape=box, style="rounded,filled,dashed", fillcolor="#FFF7ED", color="#EA580C"];
   check   [label="4. Check the render\nHTTP 200 and a real image?", shape=diamond, style=filled, fillcolor="#FEF2F2", color="#DC2626", margin="0.05,0.05"];
   fix     [label="Read Kroki's error,\nfix the source", fillcolor="#FEF2F2", color="#DC2626"];
   save    [label="5. Save and explain\n<slug>.md  ·  .png  ·  .svg  ·  source", fillcolor="#F0FDF4", color="#16A34A"];

@@ -1,5 +1,39 @@
 # Changelog
 
+## 1.1.1 (2026-11-02)
+
+Clears the plugin directory's policy hold on 1.1.0: "Pre-approves broad shell access
+in allowed-tools".
+
+**Changed**
+- The skill pre-approves exactly one command, the plugin's own render script, by its
+  full path. 1.1.0 pre-approved `curl`, `mkdir` and `ls` with any arguments.
+- New `skills/diagram/scripts/render.sh` (bash + curl): sends the source to Kroki,
+  checks every reply, and saves the SVG and PNG. It renders into a temporary folder and
+  moves the images into place only when every format succeeds, so a failed re-render no
+  longer replaces the last good image with error text. Exit codes tell Claude whether
+  to fix the source (2) or report a server problem (3).
+- The Kroki server is now a plugin setting (**Kroki server**, `kroki_url`), set with
+  `/plugin configure` or `/config`. The skill no longer reads the `KROKI_URL`
+  environment variable. Empty means kroki.io, as before.
+- Claude now looks at the rendered PNG and fixes clipped text or layout problems before
+  presenting the diagram.
+
+**Fixed**
+- SKILL.md said DBML supports PNG. Kroki renders `dbml`, `wavedrom`, `bpmn`,
+  `excalidraw`, `nomnoml` and `pikchr` (like `d2`) to SVG only; the script and the skill
+  now say so.
+- Templates no longer name the Segoe UI font, which Kroki's servers don't have. In SVGs
+  it made viewers without Segoe UI (macOS, Linux) fall back to a serif font. PlantUML
+  now uses a plain sans-serif; GraphViz names Arial, Helvetica, sans-serif.
+- `Edit` is pre-approved, so refining a diagram edits its source without a prompt.
+
+**Tests**
+- `render.sh` is tested offline against a fake curl: exit codes, the last good image
+  surviving a failed render, SVG-only engines, server fallback, Windows line endings.
+- A check that `allowed-tools` pre-approves no shell command except the plugin's own
+  script, and that the skill reads no environment variables.
+
 ## 1.1.0 (2026-11-01)
 
 Polish for the plugin directory listing, a self-hosting option, and render fixes

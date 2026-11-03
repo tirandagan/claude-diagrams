@@ -85,26 +85,45 @@ for t in tools:
     print("not allowed: " + t)
 PY
 )"
-# The credit banner Claude prints on every invocation: it must keep the author's
-# credit, and every line must be the same width or the box breaks in the terminal.
-report "SKILL.md credit banner is intact and its box lines up" "$(python3 - "$SK" <<'PY'
-import re, sys, unicodedata
-t = open(sys.argv[1], encoding="utf-8").read()
-m = re.search(r"## Credit Banner[^\n]*\n.*?```text\n(.*?)\n```", t, re.S)
-if not m: print("no credit banner block"); sys.exit()
-b = m.group(1)
+# The credit banner: hooks/banner.sh, run by hooks/hooks.json each time the skill runs.
+BANNER="$ROOT/hooks/banner.sh"
+banner_check() { python3 -c '
+import json, sys, unicodedata
+raw = sys.stdin.read()
+try: m = json.loads(raw)["systemMessage"]
+except Exception: print("not a JSON systemMessage: %r" % raw[:200]); sys.exit()
 for s in ("D I A G R A M   G E N E R A T O R", "Written by Tiran Dagan", "tiran@tirandagan.com", "Copyright © 2026"):
-    if s not in b: print("banner lost: " + s)
+    if s not in m: print("banner lost: " + s)
 w = lambda l: sum(2 if unicodedata.east_asian_width(c) in "WF" else 1 for c in l)
-widths = {w(l) for l in b.splitlines()}
+widths = {w(l) for l in m.strip("\n").splitlines()}
 if len(widths) != 1: print("banner lines differ in width: %s" % sorted(widths))
-if max(widths) > 80: print("banner wider than an 80-column terminal")
+elif max(widths) > 80: print("banner wider than an 80-column terminal")
+'; }
+report "banner: shown when the user types /diagrams:diagram" "$(printf '{"hook_event_name":"UserPromptExpansion","command_name":"diagrams:diagram","prompt":"/diagrams:diagram x"}' | bash "$BANNER" | banner_check)"
+report "banner: shown when Claude starts the skill itself" "$(printf '{"hook_event_name":"PostToolUse","tool_name":"Skill","tool_input":{"skill": "diagrams:diagram","args":"x"}}' | bash "$BANNER" | banner_check)"
+report "banner: silent for other skills and commands, always exit 0" "$(
+  for j in '{"tool_name":"Skill","tool_input":{"skill":"other:thing","args":"then diagrams:diagram"}}' \
+           '{"hook_event_name":"UserPromptExpansion","command_name":"review","prompt":"/review"}' '{}'; do
+    out="$(printf '%s' "$j" | bash "$BANNER")"; rc=$?
+    [ -n "$out" ] && echo "printed for $j"; [ "$rc" = 0 ] || echo "exit $rc for $j"
+  done)"
+report "hooks.json runs only the banner script, once per use of the skill" "$(python3 - "$ROOT/hooks/hooks.json" <<'PY'
+import json, sys
+h = json.load(open(sys.argv[1], encoding="utf-8")).get("hooks", {})
+want = {"UserPromptExpansion": "diagrams:diagram", "PostToolUse": "Skill"}
+if set(h) != set(want): print("events %s, expected %s" % (sorted(h), sorted(want)))
+for ev, groups in h.items():
+    for g in groups:
+        if g.get("matcher") != want.get(ev): print("%s matcher %r" % (ev, g.get("matcher")))
+        for k in g.get("hooks", []):
+            if k.get("type") != "command" or k.get("command") != 'bash "${CLAUDE_PLUGIN_ROOT}/hooks/banner.sh"':
+                print("%s runs %r" % (ev, k.get("command")))
 PY
 )"
 report "SKILL.md renders through the plugin's script" "$(grep -q 'bash ${CLAUDE_PLUGIN_ROOT}/skills/diagram/scripts/render.sh ' "$SK" || echo missing)"
 report "the script SKILL.md names exists" "$([ -f "$RENDER" ] || echo missing)"
 # The directory flags plugins that read values from the user's environment.
-report "skill files read no environment variables" "$(grep -rnE 'printenv|\$\{?(KROKI_URL|HOME|USER|PATH)\b' "$ROOT/skills" 2>/dev/null)"
+report "skill and hook files read no environment variables" "$(grep -rnE 'printenv|\$\{?(KROKI_URL|HOME|USER|PATH)\b' "$ROOT/skills" "$ROOT/hooks" 2>/dev/null)"
 
 echo "render.sh (fake Kroki)"
 R() { PATH="$ROOT/tests/fake:$PATH" bash "$RENDER" "$@"; }
@@ -146,7 +165,7 @@ sed 's/$/\r/' "$RENDER" > "$TMP/crlf.sh"
 OUT="$(PATH="$ROOT/tests/fake:$PATH" bash "$TMP/crlf.sh" "$W/s.puml" 2>&1)"
 report "a copy with Windows line endings still runs" "$(printf '%s\n' "$OUT" | tail -1 | grep -q '^view ' || echo "$OUT")"
 if command -v shellcheck >/dev/null 2>&1; then
-  report "shellcheck" "$(shellcheck -S warning "$RENDER" "$ROOT/tests/fake/curl" 2>&1)"
+  report "shellcheck" "$(shellcheck -S warning "$RENDER" "$ROOT/hooks/banner.sh" "$ROOT/tests/fake/curl" 2>&1)"
 fi
 
 echo "docs"

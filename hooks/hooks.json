@@ -1,0 +1,29 @@
+{
+  "description": "Shows the Diagram Generator credit banner each time the diagram skill runs. Prints a message only; never blocks or changes anything.",
+  "hooks": {
+    "UserPromptExpansion": [
+      {
+        "matcher": "diagrams:diagram",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/banner.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Skill",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/banner.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

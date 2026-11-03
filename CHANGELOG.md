@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.1.3 (2026-11-02)
+
+**Fixed**
+- The credit banner now shows every time the skill runs. In 1.1.2 the skill asked
+  Claude to print it, which worked when you typed `/diagrams:diagram` but not when
+  Claude started the skill on its own. A plugin hook now shows it instead, once per
+  use either way: [hooks/hooks.json](hooks/hooks.json) runs
+  [hooks/banner.sh](hooks/banner.sh) when you type the command and when Claude starts
+  the skill. The script only prints the banner. It never blocks anything, reads no
+  files, writes nothing and connects to nothing.
+
+**Tests**
+- Checks that the banner hook shows the banner for this skill both ways, stays silent
+  for every other skill and command, keeps the credit and lines up its box, and that
+  hooks.json runs nothing else.
+
 ## 1.1.2 (2026-11-02)
 
 **Changed**

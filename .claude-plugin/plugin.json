@@ -1,7 +1,7 @@
 {
   "name": "diagrams",
   "displayName": "Diagram Generator",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "Describe a diagram in plain English and Claude draws it: flowcharts, sequence, architecture, ER and 20+ more types, rendered through Kroki to SVG, PNG and editable source.",
   "author": {
     "name": "Tiran Dagan",

@@ -68,8 +68,8 @@ Or just ask in plain words, and Claude uses the skill on its own:
 
 > Draw a flowchart of how a support ticket gets escalated.
 
-Each time the skill runs, Claude opens with a short credit banner naming the plugin and
-its author. Then it:
+Each time the skill runs, the plugin shows a short credit banner in the terminal naming
+the plugin and its author. Then Claude:
 
 1. **Works out what you're describing:** the parts, how they connect, and whether it's
    a flow, a structure, a hierarchy, a timeline or a network.
@@ -190,8 +190,11 @@ file with all of them.
 - **Runs:** one readable script,
   [`skills/diagram/scripts/render.sh`](../skills/diagram/scripts/render.sh), which
   uses `curl` to send a diagram's source to Kroki and saves the images. It's the only
-  command the skill runs without asking you. There are no hooks, no MCP servers and
-  nothing running in the background.
+  command the skill runs without asking you.
+- **Hooks:** one, [`hooks/banner.sh`](../hooks/banner.sh), which shows the credit
+  banner when the skill starts. It only prints: it never blocks anything, reads no
+  files, writes nothing and connects to nothing. There are no MCP servers and nothing
+  running in the background.
 - **Reads:** files in your project only when a diagram needs them, and the **Kroki
   server** setting. Nothing from your environment variables.
 - **Writes:** the four files per diagram, in `diagrams/`.

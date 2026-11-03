@@ -108,16 +108,19 @@ Every diagram is saved to a `diagrams/` folder in your current project:
 The source file is the one to keep in version control. Anyone can re-render it, and
 Claude can edit it later.
 
-Each time the skill runs, Claude opens its reply with a short credit banner naming the
-plugin and its author.
+Each time the skill runs, the plugin shows a short credit banner in the terminal naming
+the plugin and its author.
 
 ## What it runs and connects to
 
 - **Runs:** one readable bash script,
   [`skills/diagram/scripts/render.sh`](skills/diagram/scripts/render.sh), which uses
   `curl` to send a diagram's source to Kroki and saves the images it gets back. It's
-  the only command the skill runs without asking you. No hooks, no MCP servers,
-  nothing in the background.
+  the only command the skill runs without asking you.
+- **Hooks:** one, [`hooks/banner.sh`](hooks/banner.sh). When you type
+  `/diagrams:diagram` or Claude starts the skill, it shows the credit banner. It only
+  prints: it never blocks anything, reads no files, writes nothing and connects to
+  nothing. No MCP servers, nothing in the background.
 - **Reads:** files in your project only when you ask for a diagram of them, and the
   plugin's **Kroki server** setting. Nothing from your environment.
 - **Writes:** four files per diagram, in `diagrams/` under the current folder.
@@ -175,6 +178,7 @@ Diagrams you've already made stay in your projects' `diagrams/` folders.
 claude-diagrams/                  the plugin root
 ├── .claude-plugin/               plugin.json (plugin diagrams), marketplace.json, listing icon
 ├── docs/USER_GUIDE.md            the user guide
+├── hooks/                        hooks.json and banner.sh: the credit banner
 ├── skills/diagram/
 │   ├── SKILL.md                  the skill: analyze, choose, write, render, check, save
 │   ├── examples.md               styled templates for each major diagram type
